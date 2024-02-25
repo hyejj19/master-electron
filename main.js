@@ -10,6 +10,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
@@ -19,6 +21,7 @@ function createWindow() {
   secondaryWindow = new BrowserWindow({
     width: 500,
     height: 400,
+
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
@@ -31,13 +34,13 @@ function createWindow() {
   mainWindow.loadFile('index.html');
   secondaryWindow.loadFile('secondary.html');
 
-  setTimeout(() => {
-    secondaryWindow.show();
-    setTimeout(() => {
-      secondaryWindow.close();
-      secondaryWindow = null;
-    }, 3000);
-  }, 2000);
+  // setTimeout(() => {
+  //   secondaryWindow.show();
+  //   setTimeout(() => {
+  //     secondaryWindow.close();
+  //     secondaryWindow = null;
+  //   }, 3000);
+  // }, 2000);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
