@@ -1,46 +1,36 @@
 // Modules
 const { app, BrowserWindow } = require('electron');
+const windowStateKeeper = require('electron-window-state');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, secondaryWindow;
+let mainWindow;
 
-// Create a new BrowserWindow when `app` is ready
 function createWindow() {
+  let windowState = windowStateKeeper({
+    defaultWidth: 500,
+    defaultHeight: 650,
+  });
+
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
-    frame: false,
-    titleBarStyle: 'hidden',
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
+    minWidth: 350,
+    maxWidth: 650,
+    minHeight: 300,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
     },
   });
 
-  secondaryWindow = new BrowserWindow({
-    width: 500,
-    height: 400,
+  mainWindow.loadFile('renderer/main.html');
 
-    webPreferences: {
-      contextIsolation: false,
-      nodeIntegration: true,
-    },
-    parent: mainWindow,
-    modal: true,
-    show: false,
-  });
+  windowState.manage(mainWindow);
 
-  mainWindow.loadFile('index.html');
-  secondaryWindow.loadFile('secondary.html');
-
-  // setTimeout(() => {
-  //   secondaryWindow.show();
-  //   setTimeout(() => {
-  //     secondaryWindow.close();
-  //     secondaryWindow = null;
-  //   }, 3000);
-  // }, 2000);
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
